@@ -28,7 +28,7 @@ Ideal for:
 
 1. **Input Argument**: User enters a short argument or claim.
 2. **Search**: ArguMint retrieves top research papers using `search_papers()` with Semantic Scholar's API.
-3. **Model Feedback**: A local LLM (like `phi-2.Q2_K.gguf` via `llama.cpp`) analyzes the argument in context of the abstracts.
+3. **Model Feedback**: A local LLM (like `tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf` via `llama.cpp`) analyzes the argument in context of the abstracts.
 4. **Display Results**:
    - Relevant papers with titles, abstracts, and authors.
    - Critical feedback with reasoning and suggestions.
