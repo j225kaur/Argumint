@@ -2,48 +2,48 @@ import streamlit as st
 from paper_search import search_papers 
 from llama_cpp import Llama
 
-# Load the GGUF model
 llm = Llama.from_pretrained(
-    repo_id="TheBloke/phi-2-GGUF",
-    filename="phi-2.Q2_K.gguf",
+    repo_id="TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
+    filename="tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf"
 )
 
-# Summarize abstract with fallback
-def summarize_abstract(abstract, max_chars=600):
+def summarize_abstract(abstract):
     try:
-        prompt = f"Summarize the following research abstract in 2 sentences:\n\n{abstract}"
+        prompt = f"Summarize this abstract in 2 sentences:\n\n{abstract}"
         result = llm(prompt, max_tokens=100, echo=False)
         return result["choices"][0]["text"].strip()
     except Exception:
-        return abstract[:max_chars] + "..."
+        return abstract[:400] + "..."
 
-# Generate feedback using summarized abstracts
-def get_feedback(argument, abstract_summaries):
-    summaries = "\n".join(f"- {s}" for s in abstract_summaries)
+def format_summaries(papers):
+    formatted = ""
+    for i, paper in enumerate(papers[:3], 1):
+        summary = summarize_abstract(paper['abstract'])
+        formatted += f"\nAbstract {i} Summary:\n{summary}\n"
+    return formatted.strip()
+
+def get_feedback(argument, summarized_abstracts):
     prompt = f"""
-Evaluate this argument based on the research summaries.
+Given the following user claim and supporting research summaries, evaluate how accurate the claim is based on the summaries. 
 
-Argument:
-\"\"\"{argument}\"\"\"
+User claim: "{argument}"
 
-Research Summaries:
-{summaries}
+Summarized Research Abstracts:
+{summarized_abstracts}
 
-Answer the following:
-1. Is the argument true? (Yes / No / Partially)
-2. Why or why not? (2 bullet points)
+Your output should include:
+1. A short answer: Is the user claim supported? (Yes, No, Partially)
+2. Two bullet points explaining why.
 """
     output = llm(prompt, max_tokens=512, echo=False)
     return output["choices"][0]["text"].strip()
 
-
-# Streamlit UI setup
+# Streamlit UI
 st.set_page_config(page_title="ArguMint", layout="wide")
 st.title("🧠 ArguMint: AI-Powered Argument Assistant")
 
 user_argument = st.text_area("Enter your argument:", height=150)
 
-# Find relevant papers and generate feedback
 if st.button("Find Supporting Research") and user_argument:
     with st.spinner("Searching Semantic Scholar..."):
         papers = search_papers(user_argument)
@@ -58,27 +58,22 @@ if st.button("Find Supporting Research") and user_argument:
                 st.markdown(f"**Abstract**: {paper['abstract']}")
                 st.markdown(f"[Read More]({paper['url']})")
 
-        with st.spinner("Summarizing research..."):
+        with st.spinner("Analyzing your argument..."):
             try:
-                top_abstracts = [p["abstract"] for p in papers[:3]]
-                summarized_abstracts = [summarize_abstract(a) for a in top_abstracts]
-
-                feedback = get_feedback(user_argument, summarized_abstracts)
+                summaries = format_summaries(papers)
+                feedback = get_feedback(user_argument, summaries)
                 st.subheader("🧠 Local LLM Feedback")
                 st.markdown(feedback)
             except Exception as e:
-                st.error(f"Error running local LLM: {e}")
+                st.error(f"LLM Error: {e}")
 
-# Manual feedback button
 if st.button("Ask Local LLM for Feedback") and user_argument:
-    with st.spinner("Analyzing your argument..."):
+    with st.spinner("Re-analyzing argument..."):
         papers = search_papers(user_argument)
         try:
-            top_abstracts = [p["abstract"] for p in papers[:3]]
-            summarized_abstracts = [summarize_abstract(a) for a in top_abstracts]
-
-            feedback = get_feedback(user_argument, summarized_abstracts)
+            summaries = format_summaries(papers)
+            feedback = get_feedback(user_argument, summaries)
             st.subheader("🧠 Local LLM Feedback")
             st.markdown(feedback)
         except Exception as e:
-            st.error(f"Error running local LLM: {e}")
+            st.error(f"LLM Error: {e}")
