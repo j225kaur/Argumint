@@ -49,16 +49,16 @@ python3 -m venv env_name
 source env_name/bin/activate  # On Windows: .\env_name\Scripts\activate
 ```
 
-###3. Install Dependencies
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-###4. Download GGUF Model
+### 4. Download GGUF Model
 Pick a lightweight model suitable for CPU (e.g., Phi-2, Gemma, Mistral-tiny) from TheBloke GGUF Models or community repos. 
 Place the downloaded .gguf file in your project folder.
 
-###5. Run the app
+### 5. Run the app
 ```bash
 streamlit run app.py
 ```
