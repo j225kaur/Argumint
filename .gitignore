@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env_name
+*.env
+*.egg-info/
+
+# Models / Data
+*.gguf
+*.bin
+*.ckpt
+*.h5
+models/
+checkpoints/
+
+# Streamlit cache
+.streamlit/
+secrets.toml
+*.log
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
