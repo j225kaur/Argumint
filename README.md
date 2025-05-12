@@ -62,3 +62,6 @@ Place the downloaded .gguf file in your project folder.
 ```bash
 streamlit run app.py
 ```
+
+### Developed by Jasvin Kaur
+Let’s connect on [LinkedIN](https://www.linkedin.com/in/jasvin-kaur/)
