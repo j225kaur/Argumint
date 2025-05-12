@@ -55,7 +55,7 @@ pip install -r requirements.txt
 ```
 
 ### 4. Download GGUF Model
-Pick a lightweight model suitable for CPU (e.g., Phi-2, Gemma, Mistral-tiny) from TheBloke GGUF Models or community repos. 
+Pick a lightweight model suitable for CPU (I have TinyLlama 1.1) from TheBloke GGUF Models or community repos. 
 Place the downloaded .gguf file in your project folder.
 
 ### 5. Run the app
